@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Hoyo Links
+{% endblock %}
+
+{% block body %}
+<div class="secondary_background">
+    <div class="primary_background">{{ message }}</div>
+    <div class="primary_background">
+        <form action="/" method="post">
+            <input type="text" name="url" placeholder="Enter the API URL" autofocus>
+            <input type="submit">
+        </form>
+    </div>
+</div>
+{% endblock %}

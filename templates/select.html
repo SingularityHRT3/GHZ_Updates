@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Select Game
+{% endblock %}
+
+{% block body %}
+    <form action="/links" method="post">
+        <div>{{ message }}</div>
+        <div>
+            <select name="game">
+                <option disabled selected value="">- Select a Game -</option>
+                {% for game in games %}
+                <option value="{{ game.biz }}">{{ game.game }}</option>
+                {% endfor %}
+            </select>
+            <select name="pre">
+                <option disabled selected value="">- Download Method -</option>
+                <option value="no">Main Download</option>
+                <option value="yes">Pre-Download</option>
+            </select>
+            <input type="submit">
+        </div>
+    </form>
+{% endblock %}
