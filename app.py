@@ -29,9 +29,9 @@ def index():
         try:
             json = requests.get(url).json()
         except:
-            return render_template("index.html", message="1 Couldn't fetch the links from the given URL. Try Again")
+            return render_template("index.html", message="Enter the correct API URL.")
         if json["retcode"] != 0 or json["message"] != "OK" or json.get("data") == None:
-            return render_template("index.html", message="2 Couldn't fetch the links from the given URL. Try Again")
+            return render_template("index.html", message="Enter the correct API URL.")
         games_link = []
         for game in json["data"]["game_packages"]:
             games_link.append(game)
@@ -46,7 +46,7 @@ def index():
                 game_list.append(hi3)
                 break
         if len(game_list) == 0:
-            return render_template("index.html", message="3 Couldn't fetch the links from the given URL. Try Again")
+            return render_template("index.html", message="API Error, try again.")
         return redirect("/select")
     return render_template("index.html")
 
