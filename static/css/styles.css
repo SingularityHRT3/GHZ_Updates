@@ -1,0 +1,127 @@
+body {
+    margin: 0;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    overflow: auto;
+}
+
+.center {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.form-panel {
+    background-color: #2a2a2a;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.message {
+    color: #e0e0e0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.error-message {
+    color: #df9999;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.select-container {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+input[type="text"], select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #363636;
+    border: 1px solid #404040;
+    border-radius: 6px;
+    color: #e0e0e0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="text"]::placeholder {
+    color: #888;
+}
+
+select option {
+    color: hsl(0, 0%, 100%);
+}
+
+input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: #505050;
+    background-color: #404040;
+}
+
+input[type="submit"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #404040;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+input[type="submit"]:hover {
+    background-color: #505050;
+}
+
+select {
+    background-color: #363636;
+    border: 1px solid #404040;
+    border-radius: 6px;
+    color: #e0e0e0;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+select:focus {
+    outline: none;
+    border-color: #505050;
+    background-color: #404040;
+} 
+
+@media (max-width: 600px) {
+    .form-panel {
+        margin: 1rem;
+    }
+    .select-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

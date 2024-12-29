@@ -5,72 +5,64 @@
 {% endblock %}
 
 {% block body %}
-    {% if game.biz == "bh3_global" %}
+<div class="form-panels-container">
+    <div class="form-panel">
         {% if game.pre_download == "yes" %}
-            <div>{{ game.name }} Pre_download Links</div>
+        <div class="message">{{ game.name }} Pre_download Links</div>
         {% else %}
-            <div>{{ game.name }} Download Links</div>
+        <div class="message">{{ game.name }} Download Links</div>
         {% endif %}
-        <div>
+        <div class="form-container">
             <form action="/select">
                 <button>Change Game</button>
             </form>
         </div>
+    </div>
+{% if game.biz == "bh3_global" %}
+    <div class="form-panel">
+        <div class="message">Game Files</div>
         <div>
-            <div>Full Game</div>
-            <div>
-                {% for part in game.links %}
-                    <div><a href="{{ part.major.game_pkgs[0].url }}">Version {{ part.major.version }} File</a></div>
-                    <div>md5: {{ part.major.game_pkgs[0].md5 }}</div>
-                {% endfor %}
-            </div>
+            {% for part in game.links %}
+                <div><a href="{{ part.major.game_pkgs[0].url }}">v{{ part.major.version }} File</a></div>
+                <div>md5: {{ part.major.game_pkgs[0].md5 }}</div>
+            {% endfor %}
         </div>
-    {% else %}
-        {% if game.pre_download == "yes" %}
-            <div>{{ game.name }} Pre_download Links</div>
-        {% else %}
-            <div>{{ game.name }} Download Links</div>
-        {% endif %}
-        <div>
-            <form action="/select">
-                <button>Change Game</button>
-            </form>
+    </div>
+{% else %}
+    <div class="form-panel">
+        <div class="message">{{ game.links.major.version }} Full Game</div>
+        <div class="another-panel">
+            Game Files (all required)
+            {% for part in game.links.major.game_pkgs %}
+                <div><a href="{{ part.url }}">Part {{ part.url[-3:]|int }}</a></div>
+                <div>md5: {{ part.md5 }}</div>
+            {% endfor %}
         </div>
-        <div>
-            <div>{{ game.links.major.version }} Full Game</div>
-            <div>
-                Game Files (all required)
-                {% for part in game.links.major.game_pkgs %}
-                    <div><a href="{{ part.url }}">Part {{ part.url[-3:]|int }}</a></div>
-                    <div>md5: {{ part.md5 }}</div>
-                {% endfor %}
-            </div>
-            <div>
-                Voice-over Files (atleast 1 required)
-                {% for langs in game.links.major.audio_pkgs %}
-                    <div><a href="{{ langs.url }}">{{ langs.language }}</a></div>
-                    <div>md5: {{ langs.md5 }}</div>
-                {% endfor %}
-            </div>
+        <div class="another-panel">
+            Voice-over Files (atleast 1 required)
+            {% for langs in game.links.major.audio_pkgs %}
+                <div><a href="{{ langs.url }}">{{ langs.language }}</a></div>
+                <div>md5: {{ langs.md5 }}</div>
+            {% endfor %}
         </div>
-        {% for update in game.links.patches %}
-        <div>
-            Update for {{ update.version }} Players
-            <div>
-                Game File
-                <div><a href="{{ update.game_pkgs[0].url }}">Game</a></div>
-                <div>md5: {{ update.game_pkgs[0].md5 }}</div>
-            </div>
-            <div>
-                Voice-over Files (download the one you already have installed)
-                {% for langs in update.audio_pkgs %}
-                    <div><a href="{{ langs.url }}">{{ langs.language }}</a></div>
-                    <div>md5: {{ langs.md5 }}</div>
-                {% endfor %}
-            </div>
+    </div>
+    {% for update in game.links.patches %}
+    <div class="form-panel">
+        <div class="message">Update for v{{ update.version }}</div>
+        <div class="another-panel">
+            Game File
+            <div><a href="{{ update.game_pkgs[0].url }}">Game</a></div>
+            <div>md5: {{ update.game_pkgs[0].md5 }}</div>
         </div>
-        {% endfor %}
-        <div></div>
-        <div></div>
-    {% endif %}
+        <div class="another-panel">
+            Voice-over Files (download the one you already have installed)
+            {% for langs in update.audio_pkgs %}
+                <div><a href="{{ langs.url }}">{{ langs.language }}</a></div>
+                <div>md5: {{ langs.md5 }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+</div>
 {% endblock %}
