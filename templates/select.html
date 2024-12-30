@@ -24,6 +24,12 @@
                         <option value="no" selected>Main Download</option>
                         <option value="yes" disabled class="disabled-option">No Pre-Installation</option>
                     </select>
+                    <select name="method" id="method-select">
+                        <option value="major" selected>Full Game</option>
+                    </select>
+                    <select name="language" id="language-select">
+                        <option value="all" selected>All Languages</option>
+                    </select>
                 </div>
                 <input type="submit">
             </form>
@@ -33,6 +39,8 @@
 
 
 <script>
+    const games = {{ games|tojson|safe }};
+    
     function updatePreOptions() {
         const gameSelect = document.getElementById('game-select');
         const preSelect = document.getElementById('pre-select');
@@ -73,13 +81,123 @@
             preSelect.appendChild(preOption);
             preSelect.value = 'no';
         }
+        
+        // Trigger updates for both method and language options
+        updateMethodOptions();
+        updateLanguageOptions();
+    }
+
+    function updateMethodOptions() {
+        const gameSelect = document.getElementById('game-select');
+        const preSelect = document.getElementById('pre-select');
+        const methodSelect = document.getElementById('method-select');
+        
+        const selectedGameBiz = gameSelect.value;
+        
+        // Remove existing options
+        while (methodSelect.firstChild) {
+            methodSelect.removeChild(methodSelect.firstChild);
+        }
+        
+        // Add Full Game option
+        const fullOption = document.createElement('option');
+        fullOption.value = 'major';
+        fullOption.textContent = 'Full Game';
+        methodSelect.appendChild(fullOption);
+        
+        // Only add patches option if not bh3_global and patches exist
+        if (selectedGameBiz !== 'bh3_global') {
+            const selectedGame = games.find(game => game.biz === selectedGameBiz);
+            const isPre = preSelect.value === 'yes';
+            const hasPatches = isPre ? 
+                selectedGame?.link?.pre_download?.patches?.length > 0 :
+                selectedGame?.link?.main?.patches?.length > 0;
+            
+            if (hasPatches) {
+                const patchesOption = document.createElement('option');
+                patchesOption.value = 'patches';
+                patchesOption.textContent = 'Update Only';
+                methodSelect.appendChild(patchesOption);
+            }
+        }
+        
+        methodSelect.value = 'major';
+        updateLanguageOptions();
+    }
+
+    function updateLanguageOptions() {
+        const gameSelect = document.getElementById('game-select');
+        const preSelect = document.getElementById('pre-select');
+        const methodSelect = document.getElementById('method-select');
+        const languageSelect = document.getElementById('language-select');
+        
+        const selectedGameBiz = gameSelect.value;
+        const selectedGame = games.find(game => game.biz === selectedGameBiz);
+        const isPre = preSelect.value === 'yes';
+        const isPatches = methodSelect.value === 'patches';
+        
+        // Remove existing options
+        while (languageSelect.firstChild) {
+            languageSelect.removeChild(languageSelect.firstChild);
+        }
+        
+        // Always add All Languages option first
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = 'All Languages';
+        languageSelect.appendChild(allOption);
+        
+        // If it's bh3_global, we're done
+        if (selectedGameBiz === 'bh3_global') {
+            return;
+        }
+        
+        // Get the correct path based on installation type and method
+        const linkType = isPre ? 'pre_download' : 'main';
+        const methodType = isPatches ? 'patches' : 'major';
+        
+        let languages = new Set();
+        
+        if (isPatches) {
+            // For patches, collect languages from all patches
+            const patches = selectedGame?.link?.[linkType]?.patches || [];
+            patches.forEach(patch => {
+                patch.audio_pkgs?.forEach(pkg => {
+                    if (pkg.language) {
+                        languages.add(pkg.language);
+                    }
+                });
+            });
+        } else {
+            // For major, get languages directly
+            const audioPkgs = selectedGame?.link?.[linkType]?.major?.audio_pkgs || [];
+            audioPkgs.forEach(pkg => {
+                if (pkg.language) {
+                    languages.add(pkg.language);
+                }
+            });
+        }
+        
+        // Add language options
+        languages.forEach(language => {
+            const option = document.createElement('option');
+            option.value = language;
+            option.textContent = language;
+            languageSelect.appendChild(option);
+        });
+        
+        languageSelect.value = 'all';
     }
 
     // Initialize options on page load
-    document.addEventListener('DOMContentLoaded', updatePreOptions);
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePreOptions();
+    });
 
-    // Update options when the game selection changes
+    // Update options when selections change
     document.getElementById('game-select').addEventListener('change', updatePreOptions);
+    document.getElementById('pre-select').addEventListener('change', updateMethodOptions);
+    document.getElementById('method-select').addEventListener('change', updateLanguageOptions);
 </script>
 
 {% endblock %}

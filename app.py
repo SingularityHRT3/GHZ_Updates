@@ -5,8 +5,7 @@ import json
 
 app = Flask(__name__)
 
-games_link = []
-game_list = []
+games_list = []
 biz_list = [
     {"biz": "hk4e_global", "game": "Genshin Impact"},
     {"biz": "hkrpg_global", "game": "Honkai: Star Rail"},
@@ -23,39 +22,43 @@ lang_key = [
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global games_link, game_list
+    global games_list
     if request.method == "POST":
         url = request.form.get("url")
         try:
             json = requests.get(url).json()
         except:
-            return render_template("index.html", message="Enter the correct API URL.")
+            return render_template("index.html", message="Enter a valid API URL.")
         if json["retcode"] != 0 or json["message"] != "OK" or json.get("data") == None:
             return render_template("index.html", message="Enter the correct API URL.")
-        games_link = []
-        for game in json["data"]["game_packages"]:
-            games_link.append(game)
-        game_list = []
-        game_biz = biz_list.copy()
-        for biz in game_biz:
-            for game in games_link:
-                if game["game"]["biz"] == biz["biz"]:
-                    pre_biz = biz
-                    if game["pre_download"]["major"]:
-                        pre_biz["pre"] = True
+        
+        games_list = []
+        for biz in biz_list:
+            for package in json["data"]["game_packages"]:
+                if biz["biz"] == package["game"]["biz"]:
+                    temp_data = {}
+                    temp_data["biz"] = biz["biz"]
+                    temp_data["game"] = biz["game"]
+                    if package["pre_download"]["major"]:
+                        temp_data["pre"] = True
                     else:
-                        pre_biz["pre"] = False
-                    game_list.append(pre_biz)
-        for game in games_link:
-            if game["game"]["biz"] == hi3["biz"]:
-                pre_biz = hi3
-                if game["pre_download"]["major"]:
-                    pre_biz["pre"] = True
-                else:
-                    pre_biz["pre"] = False
-                game_list.append(pre_biz)
-                break
-        if len(game_list) == 0:
+                        temp_data["pre"] = False
+                    temp_data["link"] = package
+                    games_list.append(temp_data)
+        temp_data = {}
+        for package in json["data"]["game_packages"]:
+            if package["game"]["biz"] == hi3["biz"]:
+                temp_data["biz"] = hi3["biz"]
+                temp_data["game"] = hi3["game"]
+                if package["pre_download"]["major"]:
+                    temp_data["pre"] = True
+                temp_data["link"] = []
+                temp_data["link"].append(package)
+        if temp_data:
+            if "pre" not in temp_data:
+                temp_data["pre"] = False
+            games_list.append(temp_data)
+        if len(games_list) == 0:
             return render_template("index.html", message="API Error, try again.")
         return redirect("/select")
     return render_template("index.html")
@@ -63,13 +66,13 @@ def index():
 @app.route("/select")
 def select():
     if request.args.get('code') == "001":
-        return render_template("select.html", games=game_list, message = "Pre-Download not available. Choose Main Download.")
+        return render_template("select.html", games=games_list, message = "Pre-Download not available. Choose Main Download.")
     if request.args.get('code') == "002":
-        return render_template("select.html", games=game_list, message = "Select a Game.")
+        return render_template("select.html", games=games_list, message = "Select a Game.")
     if request.args.get('code') == "003":
-        return render_template("select.html", games=game_list, message = "Select a Download Method.")
+        return render_template("select.html", games=games_list, message = "Select a Download Method.")
         
-    return render_template("select.html", games=game_list)
+    return render_template("select.html", games=games_list)
 
 @app.route("/links", methods=["GET", "POST"])
 def links():
