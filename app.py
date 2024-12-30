@@ -93,52 +93,11 @@ def select():
 @app.route("/links", methods=["GET", "POST"])
 def links():
     if request.method == "POST":
+        biz = request.form.get("game")
+        pre = request.form.get("pre")
+        method = request.form.get("method")
+        language = request.form.get("language")
         select_game = {}
-        select_game["biz"] = request.form.get("game")
-        select_game["pre_download"] = request.form.get("pre")
-        game_biz = biz_list.copy()
-        is_game = False
-        for game in game_biz:
-            if game["biz"] == select_game["biz"]:
-                is_game = True
-        if not(is_game) and select_game["biz"] != hi3["biz"]:
-            return redirect("/select?code=002")
-        if select_game["pre_download"] != "yes" and select_game["pre_download"] != "no":
-            return redirect("/select?code=003")
-        if select_game["biz"] == hi3["biz"]:
-            select_game["name"] = hi3["game"]
-            select_game["links"] = []
-            for game in games_link:
-                if game["game"]["biz"] == select_game["biz"]:
-                    if select_game["pre_download"] == "yes":
-                        if game["pre_download"]["major"]:
-                            select_game["links"].append(game["pre_download"])
-                        else:
-                            return redirect("/select?code=001")
-                    if select_game["pre_download"] == "no":
-                        select_game["links"].append(game["main"])
-            return render_template("links.html", game=select_game)
-        else:
-            for game in game_biz:
-                if game["biz"] == select_game["biz"]:
-                    select_game["name"] = game["game"]
-            for game in games_link:
-                if game["game"]["biz"] == select_game["biz"]:
-                    if select_game["pre_download"] == "yes":
-                        if game["pre_download"]["major"]:
-                            select_game["links"] = game["pre_download"]
-                        else:
-                            return redirect("/select?code=001")
-                    if select_game["pre_download"] == "no":
-                        select_game["links"] = game["main"]
-            for lang_select in select_game["links"]["major"]["audio_pkgs"]:
-                for lang in lang_key:
-                    if lang_select["language"] == lang["abv"]:
-                        lang_select["language"] = lang["language"]
-            for patch in select_game["links"]["patches"]:
-                for lang_select in patch["audio_pkgs"]:
-                    for lang in lang_key:
-                        if lang_select["language"] == lang["abv"]:
-                            lang_select["language"] = lang["language"]
-            return render_template("links.html", game=select_game)
+        
+        return render_template("links.html", game=select_game)
     return render_template("index.html")

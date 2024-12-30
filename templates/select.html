@@ -15,21 +15,33 @@
         <div class="form-container">
             <form action="/links" method="post">
                 <div class="select-container">
-                    <select name="game" id="game-select">
-                        {% for game in games %}
-                        <option value="{{ game.biz }}" data-pre="{{ game.pre }}">{{ game.game }}</option>
-                        {% endfor %}
-                    </select>
-                    <select name="pre" id="pre-select">
-                        <option value="no" selected>Main Download</option>
-                        <option value="yes" disabled class="disabled-option">No Pre-Installation</option>
-                    </select>
-                    <select name="method" id="method-select">
-                        <option value="major" selected>Full Game</option>
-                    </select>
-                    <select name="language" id="language-select">
-                        <option value="all" selected>All Languages</option>
-                    </select>
+                    <div>
+                        <div>Game:</div>
+                        <select name="game" id="game-select">
+                            {% for game in games %}
+                            <option value="{{ game.biz }}" data-pre="{{ game.pre }}">{{ game.game }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <div>Download:</div>
+                        <select name="pre" id="pre-select">
+                            <option value="no" selected>Main Download</option>
+                            <option value="yes" disabled class="disabled-option">No Pre-Installation</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div>Install:</div>
+                        <select name="method" id="method-select">
+                            <option value="major" selected>Full Game</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div>Language:</div>
+                        <select name="language" id="language-select">
+                            <option value="all" selected>All Languages</option>
+                        </select>
+                    </div>
                 </div>
                 <input type="submit">
             </form>
@@ -40,7 +52,7 @@
 
 <script>
     const games = {{ games|tojson|safe }};
-    
+
     function updatePreOptions() {
         const gameSelect = document.getElementById('game-select');
         const preSelect = document.getElementById('pre-select');
@@ -99,14 +111,15 @@
             methodSelect.removeChild(methodSelect.firstChild);
         }
         
-        // Add Full Game option
-        const fullOption = document.createElement('option');
-        fullOption.value = 'major';
-        fullOption.textContent = 'Full Game';
-        methodSelect.appendChild(fullOption);
-        
-        // Only add patches option if not bh3_global and patches exist
-        if (selectedGameBiz !== 'bh3_global') {
+        if (selectedGameBiz === 'bh3_global') {
+            // For Honkai Impact 3rd, only show Full Game
+            const fullOption = document.createElement('option');
+            fullOption.value = 'major';
+            fullOption.textContent = 'Full Game';
+            methodSelect.appendChild(fullOption);
+            methodSelect.value = 'major';
+        } else {
+            // For other games, check for patches
             const selectedGame = games.find(game => game.biz === selectedGameBiz);
             const isPre = preSelect.value === 'yes';
             const hasPatches = isPre ? 
@@ -114,14 +127,29 @@
                 selectedGame?.link?.main?.patches?.length > 0;
             
             if (hasPatches) {
+                // Add Update Only first
                 const patchesOption = document.createElement('option');
                 patchesOption.value = 'patches';
                 patchesOption.textContent = 'Update Only';
                 methodSelect.appendChild(patchesOption);
+                
+                // Then add Full Game
+                const fullOption = document.createElement('option');
+                fullOption.value = 'major';
+                fullOption.textContent = 'Full Game';
+                methodSelect.appendChild(fullOption);
+                
+                methodSelect.value = 'patches';  // Select Update Only by default
+            } else {
+                // If no patches, just add Full Game
+                const fullOption = document.createElement('option');
+                fullOption.value = 'major';
+                fullOption.textContent = 'Full Game';
+                methodSelect.appendChild(fullOption);
+                methodSelect.value = 'major';
             }
         }
         
-        methodSelect.value = 'major';
         updateLanguageOptions();
     }
 
