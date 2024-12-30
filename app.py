@@ -62,13 +62,13 @@ def index():
                                         lang["language"] = abv["language"]                    
                     games_list.append(temp_data)
         temp_data = {}
+        temp_data["link"] = []
         for package in json["data"]["game_packages"]:
             if package["game"]["biz"] == hi3["biz"]:
                 temp_data["biz"] = hi3["biz"]
                 temp_data["game"] = hi3["game"]
                 if package["pre_download"]["major"]:
                     temp_data["pre"] = True
-                temp_data["link"] = []
                 temp_data["link"].append(package)
         if temp_data:
             if "pre" not in temp_data:
@@ -93,11 +93,38 @@ def select():
 @app.route("/links", methods=["GET", "POST"])
 def links():
     if request.method == "POST":
-        biz = request.form.get("game")
-        pre = request.form.get("pre")
-        method = request.form.get("method")
-        language = request.form.get("language")
         select_game = {}
-        
+        select_game["biz"] = request.form.get("game")
+        links = {}
+        for game in games_list:
+            if game["biz"] == select_game["biz"]:
+                links = game["link"]
+        select_game["pre"] = request.form.get("pre")
+        select_game["method"] = request.form.get("method")
+        select_game["language"] = request.form.get("language")
+        temp_pre = ""
+        if select_game["pre"] == "yes":
+            temp_pre = "pre_download"
+        else:
+            temp_pre = "main"
+        if select_game["biz"] == hi3["biz"]:
+            select_game["game"] = hi3["game"]
+            select_game["links"] = []
+            for link in links:
+                select_game["version"] = link[temp_pre]["major"]["version"]
+                for package in link[temp_pre]["major"]["game_pkgs"]:
+                    select_game["links"].append(package)
+        else:
+            for game in biz_list:
+                if game["biz"] == select_game["biz"]:
+                    select_game["game"] = game["game"]
+                    break
+            select_game["version"] = links[temp_pre]["major"]["version"]
+            if select_game["method"] == "major":
+                select_game["links"] = links[temp_pre]["major"]
+            else:
+                select_game["links"] = []
+                for patch in links[temp_pre]["patches"]:
+                    select_game["links"].append(patch)
         return render_template("links.html", game=select_game)
     return render_template("index.html")
