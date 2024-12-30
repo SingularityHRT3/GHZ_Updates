@@ -80,6 +80,10 @@ select option {
     color: hsl(0, 0%, 100%);
 }
 
+.disabled-option {
+    color: #888; /* Darker text color for unavailable options */
+}
+
 input[type="text"]:focus, select:focus {
     outline: none;
     border-color: #505050;

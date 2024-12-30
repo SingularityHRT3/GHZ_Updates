@@ -40,10 +40,20 @@ def index():
         for biz in game_biz:
             for game in games_link:
                 if game["game"]["biz"] == biz["biz"]:
-                    game_list.append(biz)
+                    pre_biz = biz
+                    if game["pre_download"]["major"]:
+                        pre_biz["pre"] = True
+                    else:
+                        pre_biz["pre"] = False
+                    game_list.append(pre_biz)
         for game in games_link:
             if game["game"]["biz"] == hi3["biz"]:
-                game_list.append(hi3)
+                pre_biz = hi3
+                if game["pre_download"]["major"]:
+                    pre_biz["pre"] = True
+                else:
+                    pre_biz["pre"] = False
+                game_list.append(pre_biz)
                 break
         if len(game_list) == 0:
             return render_template("index.html", message="API Error, try again.")
