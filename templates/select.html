@@ -15,9 +15,9 @@
         <div class="form-container">
             <form action="/links" method="post">
                 <div class="select-container">
-                    <select name="game">
+                    <select name="game" id="game-select">
                         {% for game in games %}
-                        <option value="{{ game.biz }}" data-pre="{{ game.pre|default(false) }}">{{ game.game }}</option>
+                        <option value="{{ game.biz }}" data-pre="{{ game.pre }}">{{ game.game }}</option>
                         {% endfor %}
                     </select>
                     <select name="pre" id="pre-select">
@@ -31,28 +31,40 @@
     </div>
 </div>
 
+
 <script>
     function updatePreOptions() {
         const gameSelect = document.getElementById('game-select');
         const preSelect = document.getElementById('pre-select');
-        const selectedGame = gameSelect.options[gameSelect.selectedIndex];
-        const hasPre = selectedGame.getAttribute('data-pre') === 'true';
-
+        const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+        const hasPre = selectedOption.getAttribute('data-pre').toLowerCase() === 'true';
+        
         if (hasPre) {
-            preSelect.innerHTML = `
-                <option value="yes" selected>Pre-Installation</option>
-                <option value="no">Main Download</option>
-            `;
+            // Enable pre-installation option
+            const preOption = preSelect.querySelector('option[value="yes"]');
+            preOption.disabled = false;
+            preOption.classList.remove('disabled-option');
+            preOption.textContent = "Pre-Installation";
+            
+            // Default to pre-installation
+            preSelect.value = "yes";
         } else {
-            preSelect.innerHTML = `
-                <option value="no" selected>Main Download</option>
-                <option value="yes" disabled>No Pre-Installation</option>
-            `;
+            // Disable pre-installation option
+            const preOption = preSelect.querySelector('option[value="yes"]');
+            preOption.disabled = true;
+            preOption.classList.add('disabled-option');
+            preOption.textContent = "No Pre-Installation";
+            
+            // Force main download option
+            preSelect.value = "no";
         }
     }
 
     // Initialize options on page load
     document.addEventListener('DOMContentLoaded', updatePreOptions);
+
+    // Update options when the game selection changes
+    document.getElementById('game-select').addEventListener('change', updatePreOptions);
 </script>
 
 {% endblock %}
