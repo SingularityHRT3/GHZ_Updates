@@ -39,24 +39,39 @@
         const selectedOption = gameSelect.options[gameSelect.selectedIndex];
         const hasPre = selectedOption.getAttribute('data-pre').toLowerCase() === 'true';
         
+        // Remove existing options
+        while (preSelect.firstChild) {
+            preSelect.removeChild(preSelect.firstChild);
+        }
+        
         if (hasPre) {
-            // Enable pre-installation option
-            const preOption = preSelect.querySelector('option[value="yes"]');
-            preOption.disabled = false;
-            preOption.classList.remove('disabled-option');
-            preOption.textContent = "Pre-Installation";
+            // Add pre-installation first, then main download
+            const preOption = document.createElement('option');
+            preOption.value = 'yes';
+            preOption.textContent = 'Pre-Installation';
             
-            // Default to pre-installation
-            preSelect.value = "yes";
+            const mainOption = document.createElement('option');
+            mainOption.value = 'no';
+            mainOption.textContent = 'Main Download';
+            
+            preSelect.appendChild(preOption);
+            preSelect.appendChild(mainOption);
+            preSelect.value = 'yes';
         } else {
-            // Disable pre-installation option
-            const preOption = preSelect.querySelector('option[value="yes"]');
+            // Add main download first, then disabled pre-installation
+            const mainOption = document.createElement('option');
+            mainOption.value = 'no';
+            mainOption.textContent = 'Main Download';
+            
+            const preOption = document.createElement('option');
+            preOption.value = 'yes';
+            preOption.textContent = 'No Pre-Installation';
             preOption.disabled = true;
             preOption.classList.add('disabled-option');
-            preOption.textContent = "No Pre-Installation";
             
-            // Force main download option
-            preSelect.value = "no";
+            preSelect.appendChild(mainOption);
+            preSelect.appendChild(preOption);
+            preSelect.value = 'no';
         }
     }
 
