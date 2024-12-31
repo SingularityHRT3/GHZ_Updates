@@ -69,7 +69,6 @@ input[type="text"], select {
     color: #e0e0e0;
     width: 100%;
     box-sizing: border-box;
-    height: 44px;
 }
 
 input[type="text"]::placeholder {
@@ -116,7 +115,6 @@ input[type="submit"]:hover, button:hover {
     }
 }
 
-/* Select criteria styling */
 .select-container {
     flex-direction: column;
     gap: 1rem;
@@ -134,7 +132,6 @@ input[type="submit"]:hover, button:hover {
     font-weight: 500;
 }
 
-/* Link container styling */
 .link-container {
     background-color: #323232;
     border-radius: 8px;

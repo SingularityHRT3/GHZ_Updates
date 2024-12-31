@@ -21,7 +21,7 @@
         <div class="link-container">
         <div class="link-header">Full Game Download</div>
             {% for link in game.links %}
-            <div class="link"><a href="{{ link.url }}">File</a> <div class="md5">md5: {{ link.md5 }}</div></div>
+            <div class="link"><a href="{{ link.url }}">Game File</a> <div class="md5">md5: {{ link.md5 }}</div></div>
             {% endfor %}
         </div>
         {% else %}
@@ -36,7 +36,7 @@
                     <div class="link-container">
                     <div class="link-header">Language Files (one needed)</div>
                     {% for lang in game.links.audio_pkgs %}
-                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }} VO</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
                     {% endfor %}
                     </div>
                 {% else %}
@@ -44,7 +44,7 @@
                     <div class="link-header">{{game.language}} Language File</div>
                     {% for lang in game.links.audio_pkgs %}
                     {% if game.language == lang.language %}
-                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }} VO</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
                     {% endif %}
                     {% endfor %}
                     </div>
@@ -53,15 +53,15 @@
             {% for patch in game.links %}
             <div class="link-container">
             <div class="link-header">Update from v{{ patch.version }}</div>
-            <div class="link"><a href="{{ patch.game_pkgs[0].url }}">Game</a> <div class="md5">md5: {{ patch.game_pkgs[0].md5 }}</div></div>
+            <div class="link"><a href="{{ patch.game_pkgs[0].url }}">Game File</a> <div class="md5">md5: {{ patch.game_pkgs[0].md5 }}</div></div>
                 {% if game.language == "all" %}
                     {% for lang in patch.audio_pkgs %}
-                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }} VO</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
                     {% endfor %}
                 {% else %}
                     {% for lang in patch.audio_pkgs %}
                     {% if game.language == lang.language %}
-                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }} VO</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
                     {% endif %}
                     {% endfor %}
                 {% endif %}

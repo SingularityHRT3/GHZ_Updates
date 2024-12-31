@@ -16,7 +16,7 @@
             <form action="/links" method="post">
                 <div class="select-container">
                     <div class="select-criteria">
-                        <div class="criteria-header">Game:</div>
+                        <div class="criteria-header">Select Game:</div>
                         <select name="game" id="game-select">
                             {% for game in games %}
                             <option value="{{ game.biz }}" data-pre="{{ game.pre }}">{{ game.game }}</option>
