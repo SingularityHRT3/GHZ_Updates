@@ -1,22 +1,74 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {{ game.name }}
+    {{ game.game }} Links
 {% endblock %}
 
 {% block body %}
 <div class="center">
     <div class="form-panel">
-        {% if game.pre_download == "yes" %}
-        <div class="message">{{ game.name }} Pre-Installation Links</div>
+        {% if game.pre == "yes" %}
+        <div class="message">{{ game.game }} Pre-Installation Links for v{{ game.version }}</div>
         {% else %}
-        <div class="message">{{ game.name }} Download Links</div>
+        <div class="message">{{ game.game }} Download Links for v{{ game.version }}</div>
         {% endif %}
         <div class="form-container">
             <form action="/select">
                 <button>Change Game</button>
             </form>
         </div>
+        {% if game.biz == "bh3_global" %}
+        <div class="link-container">
+        <div class="link-header">Full Game Download</div>
+            {% for link in game.links %}
+            <div class="link"><a href="{{ link.url }}">File</a> <div class="md5">md5: {{ link.md5 }}</div></div>
+            {% endfor %}
+        </div>
+        {% else %}
+            {% if game.method == "major" %}
+                <div class="link-container">
+                <div class="link-header">Game Files for v{{ game.version }} (all needed)</div>
+                {% for pgk in game.links.game_pkgs %}
+                <div class="link"><a href="{{ pgk.url }}">Part {{ pgk.url[-3:]|int }}</a> <div class="md5">md5: {{ pgk.md5 }}</div></div>
+                {% endfor %}
+                </div>
+                {% if game.language == "all" %}
+                    <div class="link-container">
+                    <div class="link-header">Language Files (one needed)</div>
+                    {% for lang in game.links.audio_pkgs %}
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="link-container">
+                    <div class="link-header">{{game.language}} Language File</div>
+                    {% for lang in game.links.audio_pkgs %}
+                    {% if game.language == lang.language %}
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+            {% for patch in game.links %}
+            <div class="link-container">
+            <div class="link-header">Update Files for v{{ patch.version }}</div>
+            <div class="link"><a href="{{ patch.game_pkgs[0].url }}">Game File</a> <div class="md5">md5: {{ patch.game_pkgs[0].md5 }}</div></div>
+                {% if game.language == "all" %}
+                    {% for lang in patch.audio_pkgs %}
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    {% endfor %}
+                {% else %}
+                    {% for lang in patch.audio_pkgs %}
+                    {% if game.language == lang.language %}
+                    <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

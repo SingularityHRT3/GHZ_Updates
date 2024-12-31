@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Select Game
+    Game Details
 {% endblock %}
 
 {% block body %}
@@ -15,29 +15,29 @@
         <div class="form-container">
             <form action="/links" method="post">
                 <div class="select-container">
-                    <div>
-                        <div>Game:</div>
+                    <div class="select-criteria">
+                        <div class="criteria-header">Game:</div>
                         <select name="game" id="game-select">
                             {% for game in games %}
                             <option value="{{ game.biz }}" data-pre="{{ game.pre }}">{{ game.game }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div>
-                        <div>Download:</div>
+                    <div class="select-criteria">
+                        <div class="criteria-header">Download:</div>
                         <select name="pre" id="pre-select">
                             <option value="no" selected>Main Download</option>
                             <option value="yes" disabled class="disabled-option">No Pre-Installation</option>
                         </select>
                     </div>
-                    <div>
-                        <div>Install:</div>
+                    <div class="select-criteria">
+                        <div class="criteria-header">Install:</div>
                         <select name="method" id="method-select">
                             <option value="major" selected>Full Game</option>
                         </select>
                     </div>
-                    <div>
-                        <div>Language:</div>
+                    <div class="select-criteria">
+                        <div class="criteria-header">Language:</div>
                         <select name="language" id="language-select">
                             <option value="all" selected>All Languages</option>
                         </select>
@@ -51,7 +51,7 @@
 
 
 <script>
-    const games = {{ games|tojson|safe }};
+    const gameList = {{ games|tojson|safe }};
 
     function updatePreOptions() {
         const gameSelect = document.getElementById('game-select');
@@ -120,7 +120,7 @@
             methodSelect.value = 'major';
         } else {
             // For other games, check for patches
-            const selectedGame = games.find(game => game.biz === selectedGameBiz);
+            const selectedGame = gameList.find(game => game.biz === selectedGameBiz);
             const isPre = preSelect.value === 'yes';
             const hasPatches = isPre ? 
                 selectedGame?.link?.pre_download?.patches?.length > 0 :
@@ -160,7 +160,7 @@
         const languageSelect = document.getElementById('language-select');
         
         const selectedGameBiz = gameSelect.value;
-        const selectedGame = games.find(game => game.biz === selectedGameBiz);
+        const selectedGame = gameList.find(game => game.biz === selectedGameBiz);
         const isPre = preSelect.value === 'yes';
         const isPatches = methodSelect.value === 'patches';
         

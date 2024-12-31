@@ -49,17 +49,17 @@ def index():
                             for patch in temp_data["link"]["pre_download"]["patches"]:
                                 for lang in patch["audio_pkgs"]:
                                     if lang["language"] == abv["abv"]:
-                                        lang["language"] = abv["language"]
+                                        lang["language"] = abv["language"]                          
                     else:
                         temp_data["pre"] = False
-                        for abv in lang_key:
-                            for lang in temp_data["link"]["main"]["major"]["audio_pkgs"]:
+                    for abv in lang_key:
+                        for lang in temp_data["link"]["main"]["major"]["audio_pkgs"]:
+                            if lang["language"] == abv["abv"]:
+                                lang["language"] = abv["language"]
+                        for patch in temp_data["link"]["main"]["patches"]:
+                            for lang in patch["audio_pkgs"]:
                                 if lang["language"] == abv["abv"]:
-                                    lang["language"] = abv["language"]
-                            for patch in temp_data["link"]["main"]["patches"]:
-                                for lang in patch["audio_pkgs"]:
-                                    if lang["language"] == abv["abv"]:
-                                        lang["language"] = abv["language"]                    
+                                    lang["language"] = abv["language"]                 
                     games_list.append(temp_data)
         temp_data = {}
         temp_data["link"] = []
