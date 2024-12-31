@@ -23,7 +23,7 @@ body {
     padding: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 500px;
+    max-width: 550px;
     box-sizing: border-box;
 }
 
@@ -164,8 +164,12 @@ input[type="submit"]:hover, button:hover {
 
 .link a {
     color: #e0e0e0;
-    text-decoration: none;
-    transition: color 0.2s;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
 }
 
 .link a:hover {

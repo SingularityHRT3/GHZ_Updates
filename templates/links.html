@@ -52,8 +52,8 @@
             {% else %}
             {% for patch in game.links %}
             <div class="link-container">
-            <div class="link-header">Update Files for v{{ patch.version }}</div>
-            <div class="link"><a href="{{ patch.game_pkgs[0].url }}">Game File</a> <div class="md5">md5: {{ patch.game_pkgs[0].md5 }}</div></div>
+            <div class="link-header">Update from v{{ patch.version }}</div>
+            <div class="link"><a href="{{ patch.game_pkgs[0].url }}">Game</a> <div class="md5">md5: {{ patch.game_pkgs[0].md5 }}</div></div>
                 {% if game.language == "all" %}
                     {% for lang in patch.audio_pkgs %}
                     <div class="link"><a href="{{ lang.url }}">{{ lang.language }}</a> <div class="md5">md5: {{ lang.md5 }}</div></div>
